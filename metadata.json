@@ -1,0 +1,5 @@
+{
+  "name": "Xandeum PNode Explorer",
+  "description": "A high-performance analytics dashboard for the Xandeum storage layer network, visualizing pNode status, metrics, and topology.",
+  "requestFramePermissions": []
+}
