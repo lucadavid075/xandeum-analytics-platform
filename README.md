@@ -4,11 +4,15 @@ The **Xandeum pNode Explorer** is a high-performance, real-time analytics dashbo
 
 ## My Submission for the Xandeum Bounty include
 ### Live Website
-Live Website: https://xandeum-analytics-platform.vercel.app
+Live: https://xandeum-analytics-platform.vercel.app
 
 ### Comprehensive API for developers
 
-API Resources: https://web-production-b4440.up.railway.app/docs
+API Resources: https://web-production-b4440.up.railway.app/docs  
+[Github repo](https://github.com/lucadavid075/pnode-aggregation-api)
+
+### Google docs
+Link to the google docs submitted on Superteam platform, contains credentials to successfuly run the api, connect to the database and use gemini on the web app.
 
 ## 🌐 Live Website Features
 

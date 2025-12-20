@@ -9,7 +9,7 @@ const API_URL = `${BASE_URL}/all-nodes`;
  * Hardcoded based on latest protocol specifications.
  */
 export const fetchMilestoneInfo = async (): Promise<MilestoneInfo> => {
-  // In a production app, this might come from a config endpoint or on-chain state
+  // Coming soon, this might come from a config endpoint or on-chain state and reflects to the users the current milestone xandeum.network/innovation-eras
   return {
     version: '0.8',
     name: 'Reinheim',

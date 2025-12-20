@@ -1,8 +1,8 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, GenerateContentResponse, Chat } from "@google/genai";
 import { ApiResponse } from '../types';
 import { Send, Sparkles, X, Bot, User, Loader2, Key, ExternalLink, AlertCircle } from 'lucide-react';
-
 interface AiInsightsProps {
   data: ApiResponse | null;
   isOpen: boolean;
@@ -17,7 +17,7 @@ interface Message {
 const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: 'Hello! I am the Xandeum Network Assistant. I can help you understand the platform, check network status, or explain how to stake XAND. How can I help you today?' }
+    { role: 'model', text: 'Hello! I am the Xandeum Network Assistant. The network has transitioned to the South Era (Working Prototype). I can help you understand our new dApp APIs, pNode rewards, and the Reinheim milestone (v0.8). How can I help you today?' }
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [hasKey, setHasKey] = useState<boolean | null>(null);
@@ -40,7 +40,6 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
       const selected = await window.aistudio.hasSelectedApiKey();
       setHasKey(selected);
     } else {
-      // Fallback for environments where process.env is accessible
       setHasKey(!!process.env.API_KEY);
     }
   };
@@ -48,7 +47,7 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
   const handleOpenSelectKey = async () => {
     if (window.aistudio) {
       await window.aistudio.openSelectKey();
-      setHasKey(true); // Proceed to app after triggering selection
+      setHasKey(true);
     }
   };
 
@@ -61,14 +60,13 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
     setIsTyping(true);
 
     try {
-      // Use process.env.API_KEY as per global guidelines
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
       // Prepare context summary
       const onlineCount = data?.summary.online_ip_nodes || 0;
       const pnodeCount = data?.summary.unique_pnodes || 0;
       const offlineCount = data?.summary.offline_ip_nodes || 0;
-      const nodeContext = data?.merged_pnodes.slice(0, 40).map(n => ({
+      const nodeContext = data?.merged_pnodes.slice(0, 30).map(n => ({
         addr: n.address,
         ip: n.source_ip,
         ver: n.version,
@@ -77,27 +75,35 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
       const systemInstruction = `
         You are an expert AI Assistant for the Xandeum Network.
         
-        **Platform Overview:**
+        **Current Context: SOUTH ERA (v0.8 Reinheim)**
+        - Status: Working Prototype.
+        - Transition: Moving from Deep South (Foundational) to South (Functional Prototype).
+        - Features: Architecture spike, journey through all layers, full API for storage-enabled dApps.
+        - Developer Model: File system model for scalable storage on Solana.
+        - Core Capabilities: Basic search, pNode rewards, redundancy, and paging.
+        
+        **Platform Knowledge:**
         - Xandeum: Scalable storage layer for Solana.
         - pNodes: Storage providers hosting "Pods".
         - XAND: Native utility/governance token.
-        - Staking: Users delegate XAND to pNodes for rewards.
-        - Era: Deep South Era (Foundational storage layer phase).
+        - Latest Version: 0.8 (Reinheim).
         
-        **Current Network State:**
-        - Online Hosts: ${onlineCount} | pNodes: ${pnodeCount} | Offline: ${offlineCount}
+        **Real-time Network Data:**
+        - Online Hosts: ${onlineCount}
+        - Total pNodes: ${pnodeCount}
+        - Offline Hosts: ${offlineCount}
         
-        **Node Sample:**
+        **Sample of Registry Data:**
         ${JSON.stringify(nodeContext)}
 
         **Instructions:**
-        1. Explain staking and platform concepts.
-        2. Use provided stats for status queries.
-        3. Be concise and friendly.
-        4. No financial advice.
+        1. Explain the South Era's importance as a functional prototype phase.
+        2. Highlight "Better Search" as the goal for the Reinheim milestone.
+        3. Discuss pNode rewards and the dApp API when asked about incentives or developer tools.
+        4. Be concise, technical where needed, but always friendly.
+        5. No financial advice regarding XAND token price.
       `;
 
-      // Use gemini-3-flash-preview as per model selection rules
       const chat: Chat = ai.chats.create({
         model: 'gemini-3-flash-preview',
         config: {
@@ -112,7 +118,7 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
 
       for await (const chunk of resultStream) {
         const c = chunk as GenerateContentResponse;
-        const text = c.text; // Access as property, not method
+        const text = c.text;
         if (text) {
           fullResponse += text;
           setMessages(prev => {
@@ -124,13 +130,12 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
       }
     } catch (error: any) {
       console.error("AI Error:", error);
-      
       const errorMessage = error?.message || "";
       if (errorMessage.includes("Requested entity was not found")) {
         setHasKey(false);
         setMessages(prev => [...prev, { role: 'model', text: "Access to Gemini was lost. Please reconnect your API key." }]);
       } else {
-        setMessages(prev => [...prev, { role: 'model', text: "I encountered an error. This usually happens if the API key lacks permission or if there's a quota limit. Please check your credentials." }]);
+        setMessages(prev => [...prev, { role: 'model', text: "I encountered an error. Please ensure your API key is properly configured." }]);
       }
     } finally {
       setIsTyping(false);
@@ -148,15 +153,14 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-y-0 right-0 w-full md:w-[450px] bg-white dark:bg-slate-900 shadow-2xl z-50 transform transition-transform duration-300 border-l border-slate-200 dark:border-slate-800 flex flex-col font-sans">
-      {/* Header */}
       <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-950">
         <div className="flex items-center gap-2">
           <div className="p-2 bg-teal-500/20 rounded-lg">
             <Sparkles size={18} className="text-teal-400" />
           </div>
           <div>
-            <h3 className="font-bold text-white">AI Insights</h3>
-            <p className="text-xs text-slate-400">Gemini 3 Flash Active</p>
+            <h3 className="font-bold text-white">Xandeum Assistant</h3>
+            <p className="text-xs text-slate-400">South Era Expert Mode</p>
           </div>
         </div>
         <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-400 hover:text-white">
@@ -172,27 +176,18 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
           <div className="space-y-2">
             <h4 className="text-xl font-bold text-white">Connect to Gemini</h4>
             <p className="text-slate-400 text-sm">
-              AI Insights requires a paid Gemini API key from a Google Cloud project with billing enabled.
+              The AI Assistant needs an API key to provide insights.
             </p>
           </div>
           <button 
             onClick={handleOpenSelectKey}
-            className="w-full py-3 px-4 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-teal-900/40 flex items-center justify-center gap-2"
+            className="w-full py-3 px-4 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold transition-all shadow-lg"
           >
             Select API Key
           </button>
-          <a 
-            href="https://ai.google.dev/gemini-api/docs/billing" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-xs text-slate-500 hover:text-teal-400 flex items-center gap-1 transition-colors"
-          >
-            Learn about Gemini API billing <ExternalLink size={10} />
-          </a>
         </div>
       ) : (
         <>
-          {/* Messages Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
@@ -222,36 +217,31 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
                  </div>
                  <div className="bg-slate-950 p-3 rounded-2xl rounded-tl-sm border border-slate-800 shadow-sm flex items-center gap-2">
                     <Loader2 size={14} className="animate-spin text-teal-500" />
-                    <span className="text-xs text-slate-400">Thinking...</span>
+                    <span className="text-xs text-slate-400">Processing metrics...</span>
                  </div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
           <div className="p-4 bg-slate-950 border-t border-slate-800">
             <div className="relative">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about staking, nodes, or Xandeum..."
-                className="w-full bg-slate-900 text-white pl-4 pr-12 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none text-sm border border-slate-800 placeholder-slate-500"
+                placeholder="Ask about pnode, staking, innvation era, rewards..."
+                className="w-full bg-slate-900 text-white pl-4 pr-12 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none text-sm border border-slate-800"
                 rows={1}
                 style={{ minHeight: '44px', maxHeight: '120px' }}
               />
               <button 
                 onClick={handleSend}
                 disabled={!input.trim() || isTyping}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors disabled:opacity-50"
               >
                 <Send size={16} />
               </button>
-            </div>
-            <div className="text-center mt-2 flex items-center justify-center gap-1">
-               <span className="text-[10px] text-slate-500 uppercase tracking-tighter">AI Context Active</span>
-               <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
             </div>
           </div>
         </>
