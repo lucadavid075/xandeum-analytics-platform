@@ -11,10 +11,10 @@ const API_URL = `${BASE_URL}/all-nodes`;
 export const fetchMilestoneInfo = async (): Promise<MilestoneInfo> => {
   // Coming soon, this might come from a config endpoint or on-chain state and reflects to the users the current milestone xandeum.network/innovation-eras
   return {
-    version: '0.8',
-    name: 'Reinheim',
-    goal: 'Better Search',
-    description: 'Introducing advanced indexing, pNode rewards, and high-performance search capabilities.'
+    version: '0.9',
+    name: 'Bamberg',
+    goal: 'Redundancy stats',
+    description: 'Introducing Extended stats, inlcuding stats about Redundancy, no pNode update required - v0.9 with stats is still running xandminer/xandminerd/pod v0.8'
   };
 };
 

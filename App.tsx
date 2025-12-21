@@ -54,7 +54,8 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <div className="flex min-h-screen bg-slate-950 text-slate-200 font-sans">
-        <Sidebar onAiToggle={() => setIsAiOpen(true)} milestone={milestone} />
+        {/* Fixed: Removed milestone prop from Sidebar as its props definition doesn't include it */}
+        <Sidebar onAiToggle={() => setIsAiOpen(true)} />
         
         <AiInsights data={data} isOpen={isAiOpen} onClose={() => setIsAiOpen(false)} />
 
@@ -81,7 +82,8 @@ const App: React.FC = () => {
 
             <Routes>
               <Route path="/" element={<Dashboard data={data} loading={loading} error={error} milestone={milestone} />} />
-              <Route path="/ip-nodes" element={<IpNodeList data={data} loading={loading} milestone={milestone} />} />
+              {/* Fixed: Removed milestone prop from IpNodeList as its props definition doesn't include it */}
+              <Route path="/ip-nodes" element={<IpNodeList data={data} loading={loading} />} />
               <Route path="/pnodes" element={<PNodeList data={data} loading={loading} />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
