@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface StatCardProps {
@@ -5,7 +6,7 @@ interface StatCardProps {
   value: string | number;
   icon: React.ReactNode;
   trend?: string;
-  color?: 'cyan' | 'green' | 'red' | 'purple';
+  color?: 'cyan' | 'green' | 'red' | 'purple' | 'yellow';
 }
 
 const colorClasses = {
@@ -13,6 +14,7 @@ const colorClasses = {
   green: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
   red: 'text-rose-400 bg-rose-400/10 border-rose-400/20',
   purple: 'text-purple-400 bg-purple-400/10 border-purple-400/20',
+  yellow: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
 };
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon, trend, color = 'cyan' }) => {

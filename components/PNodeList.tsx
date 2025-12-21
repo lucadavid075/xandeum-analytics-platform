@@ -52,7 +52,8 @@ const PNodeList: React.FC<PNodeListProps> = ({ data, loading }) => {
     let result = enrichedPNodes.filter(p => 
       p.address.toLowerCase().includes(search.toLowerCase()) ||
       p.source_ip.includes(search) ||
-      (p.pubkey && p.pubkey.toLowerCase().includes(search.toLowerCase()))
+      (p.pubkey && p.pubkey.toLowerCase().includes(search.toLowerCase())) ||
+      p.version.includes(search)
     );
 
     if (sortField) {
@@ -133,7 +134,7 @@ const PNodeList: React.FC<PNodeListProps> = ({ data, loading }) => {
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500" size={20} />
             <input 
               type="text" 
-              placeholder="Search Address, IP, Pubkey..." 
+              placeholder="Search Address, IP, Version..." 
               className="bg-slate-800 text-white pl-12 pr-4 py-3.5 rounded-xl border border-slate-700 focus:outline-none focus:border-purple-500 w-full transition-all text-base placeholder-slate-600 shadow-inner"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -149,7 +150,7 @@ const PNodeList: React.FC<PNodeListProps> = ({ data, loading }) => {
                 <th className="p-5 w-12"></th>
                 {/* Fixed Headers (Non-sortable) */}
                 <th className="p-5">pNode Address</th>
-                <th className="p-5">Source IP</th>
+                <th className="p-5">Version</th>
                 <th className="p-5">Status</th>
                 
                 {/* Metric Headers (Sortable) */}
@@ -195,7 +196,7 @@ const PNodeList: React.FC<PNodeListProps> = ({ data, loading }) => {
                           {node.address.substring(0, 12)}...{node.address.substring(node.address.length - 10)}
                         </div>
                       </td>
-                      <td className="p-5 font-mono text-cyan-400 text-sm font-medium">{node.source_ip}</td>
+                      <td className="p-5 font-mono text-cyan-400 text-sm font-bold uppercase">v{node.version}</td>
                       <td className="p-5">
                         <div className="flex items-center gap-3">
                            <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.5)] animate-pulse' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]'}`}></div>

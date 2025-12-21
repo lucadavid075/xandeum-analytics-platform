@@ -75,5 +75,15 @@ export const DashboardSkeleton = () => (
           </div>
        </div>
     </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+       <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl h-80">
+          <Skeleton className="h-6 w-32 mb-8" />
+          <Skeleton className="h-48 w-full" />
+       </div>
+       <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl h-80">
+          <Skeleton className="h-6 w-32 mb-8" />
+          <Skeleton className="h-48 w-full" />
+       </div>
+    </div>
   </div>
 );
