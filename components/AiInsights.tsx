@@ -17,7 +17,9 @@ interface Message {
 const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: 'Hello! I am the Xandeum Network Assistant. The network has transitioned to the South Era (Working Prototype). I can help you understand our new dApp APIs, pNode rewards, and the Reinheim milestone (v0.8). How can I help you today?' }
+    { 
+      role: 'model', 
+      text: 'Hello! I am the Xandeum Network pNode Assistant. The network is currently in the South Era (Working Prototype) and moving to the Main Era soon. I can help you understand our new dApp APIs, pNode rewards, and the Bamberg milestone (v0.9). How can I help you today?' }
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [hasKey, setHasKey] = useState<boolean | null>(null);
@@ -75,18 +77,18 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
       const systemInstruction = `
         You are an expert AI Assistant for the Xandeum Network.
         
-        **Current Context: SOUTH ERA (v0.8 Reinheim)**
+        **Current Context: SOUTH ERA (v0.9 Bamberg)**
         - Status: Working Prototype.
-        - Transition: Moving from Deep South (Foundational) to South (Functional Prototype).
+        - Transition: Moving from Deep South (Foundational) to South (Working Prototype).
         - Features: Architecture spike, journey through all layers, full API for storage-enabled dApps.
         - Developer Model: File system model for scalable storage on Solana.
-        - Core Capabilities: Basic search, pNode rewards, redundancy, and paging.
+        - Core Capabilities: Redundancy stats, Basic search, pNode rewards, and paging.
         
         **Platform Knowledge:**
         - Xandeum: Scalable storage layer for Solana.
         - pNodes: Storage providers hosting "Pods".
         - XAND: Native utility/governance token.
-        - Latest Version: 0.8 (Reinheim).
+        - Latest Version: 0.9 (Bamberg).
         
         **Real-time Network Data:**
         - Online Hosts: ${onlineCount}
@@ -98,7 +100,7 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
 
         **Instructions:**
         1. Explain the South Era's importance as a functional prototype phase.
-        2. Highlight "Better Search" as the goal for the Reinheim milestone.
+        2. Highlight "Redundancy stats" as the goal for the Bamberg milestone.
         3. Discuss pNode rewards and the dApp API when asked about incentives or developer tools.
         4. Be concise, technical where needed, but always friendly.
         5. No financial advice regarding XAND token price.
@@ -160,7 +162,7 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
           </div>
           <div>
             <h3 className="font-bold text-white">Xandeum Assistant</h3>
-            <p className="text-xs text-slate-400">South Era Expert Mode</p>
+            <p className="text-xs text-slate-400">South Era Mode</p>
           </div>
         </div>
         <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-400 hover:text-white">
