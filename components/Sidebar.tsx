@@ -79,9 +79,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onAiToggle }) => {
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-black text-white tracking-tight flex items-center gap-1.5">
-                <span className="bg-gradient-to-r from-teal-300 via-white to-amber-300 bg-clip-text text-transparent">South Era</span>
+                <span className="bg-gradient-to-r from-teal-300 via-white to-amber-300 bg-clip-text text-transparent">Main Era</span>
               </span>
-              <span className="text-[9px] text-slate-400 font-medium leading-none mt-1.5 italic">Working Prototype</span>
+              <span className="text-[9px] text-slate-400 font-medium leading-none mt-1.5 italic">Support Early storage-enabled dApps</span>
             </div>
           </div>
         </div>
