@@ -82,7 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAiToggle }) => {
               <span className="text-sm font-black text-white tracking-tight flex items-center gap-1.5">
                 <span className="bg-gradient-to-r from-teal-300 via-white to-amber-300 bg-clip-text text-transparent">Main Era</span>
               </span>
-              <span className="text-[9px] text-slate-400 font-medium leading-none mt-1.5 italic">Real-world sedApps</span>
+              <span className="text-[9px] text-slate-400 font-medium leading-none mt-1.5 italic">Spport early sedApps</span>
             </div>
           </div>
         </div>
