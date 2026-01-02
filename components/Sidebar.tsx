@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Server, Layers, Sparkles, Globe, BookOpen, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, Server, Layers, Sparkles, Globe, BookOpen, ExternalLink, Coins, HelpCircle } from 'lucide-react';
 
 interface SidebarProps {
   onAiToggle: () => void;
@@ -101,6 +102,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onAiToggle }) => {
           <Layers size={18} />
           <span className="text-sm font-medium">pNodes</span>
         </Link>
+        <Link to="/faq" className={getNavClasses("/faq")}>
+          <HelpCircle size={18} />
+          <span className="text-sm font-medium">FAQ</span>
+        </Link>
 
         <div className="pt-6 pb-2 px-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Resources</div>
         <div className="space-y-1">
@@ -125,6 +130,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onAiToggle }) => {
             <div className="flex items-center gap-3">
               <BookOpen size={18} className="text-slate-500 group-hover:text-amber-400 transition-colors" />
               <span className="text-sm">Documentation</span>
+            </div>
+            <ExternalLink size={12} className="opacity-0 group-hover:opacity-50" />
+          </a>
+          <a 
+            href="https://stakexand.xandeum.network/?_gl=1*qwtfwk*_gcl_au*MTYyNjk0MTQzOC4xNzY0Njc4NzMz" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className={resourceLinkClasses}
+          >
+            <div className="flex items-center gap-3">
+              <Coins size={18} className="text-slate-500 group-hover:text-yellow-400 transition-colors" />
+              <span className="text-sm">XAND Staking Portal</span>
             </div>
             <ExternalLink size={12} className="opacity-0 group-hover:opacity-50" />
           </a>
