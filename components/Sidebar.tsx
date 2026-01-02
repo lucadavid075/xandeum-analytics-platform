@@ -141,7 +141,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAiToggle }) => {
           >
             <div className="flex items-center gap-3">
               <Coins size={18} className="text-slate-500 group-hover:text-yellow-400 transition-colors" />
-              <span className="text-sm">XAND Staking Portal</span>
+              <span className="text-sm">XAND Staking</span>
             </div>
             <ExternalLink size={12} className="opacity-0 group-hover:opacity-50" />
           </a>
@@ -192,7 +192,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAiToggle }) => {
           </div>
           <div className="flex justify-between items-center mt-2 border-t border-slate-700/50 pt-2">
             <span className="text-[9px] text-slate-600 font-mono tracking-tighter uppercase">XandMinerD Ready</span>
-            <span className="text-[9px] text-slate-600 font-mono">v1.2.0</span>
+            <span className="text-[9px] text-slate-600 font-mono">v1.2</span>
           </div>
         </div>
       </div>
