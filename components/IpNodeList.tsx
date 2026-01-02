@@ -14,7 +14,7 @@ type SortField = 'ip' | 'status' | 'cpu' | 'ram' | 'uptime';
 const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
   const [filter, setFilter] = useState('');
   const [sortField, setSortField] = useState<SortField>('status');
-  const [sortAsc, setSortAsc] = useState(true);
+  const [sortAsc, setSortAsc] = useState(false); // Default to Descending (Online first)
   const [expandedIp, setExpandedIp] = useState<string | null>(null);
 
   const getStats = (details: IpNodeDetail) => {
@@ -52,15 +52,24 @@ const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
     let result = nodes.filter(n => n.ip.includes(filter));
     
     result.sort((a, b) => {
+      // Special handling for status sort to prioritize Pods
+      if (sortField === 'status') {
+         const statusA = a.status === 'online' ? 1 : 0;
+         const statusB = b.status === 'online' ? 1 : 0;
+         
+         if (statusA !== statusB) {
+            return sortAsc ? statusA - statusB : statusB - statusA;
+         }
+
+         // Secondary sort: Pod Count (High to Low when sorting Descending)
+         const podsA = a.pods?.length || 0;
+         const podsB = b.pods?.length || 0;
+         return sortAsc ? podsA - podsB : podsB - podsA;
+      }
+
       let valA: any = a[sortField];
       let valB: any = b[sortField];
       
-      // Handle status specific sorting to group
-      if (sortField === 'status') {
-         valA = a.status === 'online' ? 1 : 0;
-         valB = b.status === 'online' ? 1 : 0;
-      }
-
       if (valA < valB) return sortAsc ? -1 : 1;
       if (valA > valB) return sortAsc ? 1 : -1;
       return 0;
@@ -74,7 +83,7 @@ const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
       setSortAsc(!sortAsc);
     } else {
       setSortField(field);
-      setSortAsc(true);
+      setSortAsc(false); // Default to descending for new fields
     }
   };
 
@@ -103,6 +112,11 @@ const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
       return new Intl.NumberFormat('en-US').format(num);
   };
 
+  const formatVersion = (ver: string | undefined) => {
+      if (!ver) return null;
+      return ver.startsWith('v') ? ver : `v${ver}`;
+  };
+
   const formatTimestamp = (ts: number | string | undefined) => {
       if (!ts) return 'N/A';
       try {
@@ -119,7 +133,7 @@ const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
       }
   };
 
-  if (loading) return <TableSkeleton rows={10} cols={7} />;
+  if (loading) return <TableSkeleton rows={10} cols={6} />;
 
   return (
     <div className="bg-slate-900 rounded-xl border border-slate-800 shadow-xl overflow-hidden animate-fade-in">
@@ -147,11 +161,30 @@ const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
             <tr className="bg-slate-800/50 text-slate-400 text-sm uppercase tracking-wider">
               <th className="p-4 w-10"></th>
               <th className="p-4 cursor-pointer hover:text-white" onClick={() => handleSort('ip')}>IP Address</th>
-              <th className="p-4 cursor-pointer hover:text-white" onClick={() => handleSort('status')}>Status</th>
-              <th className="p-4">Version</th>
-              <th className="p-4 cursor-pointer hover:text-white" onClick={() => handleSort('cpu')}>CPU</th>
-              <th className="p-4 cursor-pointer hover:text-white" onClick={() => handleSort('ram')}>RAM</th>
-              <th className="p-4 cursor-pointer hover:text-white" onClick={() => handleSort('uptime')}>Uptime</th>
+              <th className="p-4 cursor-pointer hover:text-white" onClick={() => handleSort('status')}>
+                 <div className="flex items-center gap-2">
+                    Status 
+                    {sortField === 'status' ? (sortAsc ? <ChevronUp size={14} className="text-cyan-400"/> : <ChevronDown size={14} className="text-cyan-400"/>) : null}
+                 </div>
+              </th>
+              <th className="p-4 cursor-pointer hover:text-white" onClick={() => handleSort('cpu')}>
+                 <div className="flex items-center gap-2">
+                    CPU
+                    {sortField === 'cpu' ? (sortAsc ? <ChevronUp size={14} className="text-cyan-400"/> : <ChevronDown size={14} className="text-cyan-400"/>) : null}
+                 </div>
+              </th>
+              <th className="p-4 cursor-pointer hover:text-white" onClick={() => handleSort('ram')}>
+                 <div className="flex items-center gap-2">
+                    RAM
+                    {sortField === 'ram' ? (sortAsc ? <ChevronUp size={14} className="text-cyan-400"/> : <ChevronDown size={14} className="text-cyan-400"/>) : null}
+                 </div>
+              </th>
+              <th className="p-4 cursor-pointer hover:text-white" onClick={() => handleSort('uptime')}>
+                 <div className="flex items-center gap-2">
+                    Uptime
+                    {sortField === 'uptime' ? (sortAsc ? <ChevronUp size={14} className="text-cyan-400"/> : <ChevronDown size={14} className="text-cyan-400"/>) : null}
+                 </div>
+              </th>
               <th className="p-4 text-right">Pods</th>
             </tr>
           </thead>
@@ -176,9 +209,6 @@ const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
                       {node.status.toUpperCase()}
                     </span>
                   </td>
-                  <td className="p-4 text-slate-300 text-sm">
-                    {node.version?.result?.version || <span className="text-slate-600">-</span>}
-                  </td>
                   <td className="p-4">
                     {node.status === 'online' ? (
                       <div className="flex items-center gap-2">
@@ -201,7 +231,11 @@ const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
                     {node.status === 'online' ? formatUptime(node.uptime) : '-'}
                   </td>
                   <td className="p-4 text-right">
-                    <span className="bg-slate-700 text-slate-300 px-2 py-1 rounded text-xs">
+                    <span className={`px-2 py-1 rounded text-xs font-bold ${
+                        (node.pods?.length || 0) > 0 
+                        ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' 
+                        : 'bg-slate-700 text-slate-400'
+                    }`}>
                       {node.pods?.length || 0}
                     </span>
                   </td>
@@ -210,7 +244,7 @@ const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
                 {/* Expanded Detail Row */}
                 {expandedIp === node.ip && (
                     <tr className="bg-slate-800/20">
-                        <td colSpan={8} className="p-0">
+                        <td colSpan={7} className="p-0">
                             <div className="p-6 grid grid-cols-1 md:grid-cols-4 gap-6 animate-fade-in border-b border-slate-700/50">
                                 
                                 {/* Network Stats */}
@@ -294,6 +328,10 @@ const IpNodeList: React.FC<IpNodeListProps> = ({ data, loading }) => {
                                         <Activity size={14} className="text-orange-400" /> System State
                                     </h4>
                                     <div className="space-y-2">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-500">Host Version</span>
+                                            <span className="text-slate-200 font-mono">{formatVersion(node.version?.result?.version) || 'N/A'}</span>
+                                        </div>
                                         <div className="flex justify-between text-sm">
                                             <span className="text-slate-500">Current Index</span>
                                             <span className="text-slate-200 font-mono">#{node.currentIndex}</span>
