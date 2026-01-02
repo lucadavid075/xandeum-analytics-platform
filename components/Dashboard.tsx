@@ -1,5 +1,5 @@
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { ApiResponse, IpNodeDetail, MilestoneInfo } from '../types';
 import { Server, AlertCircle, Database, HardDrive, Target, ArrowUpCircle, Activity, ShieldCheck, Zap, Cpu } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, CartesianGrid } from 'recharts';
@@ -15,28 +15,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }) => {
-  if (loading) return <DashboardSkeleton />;
-  if (error) return <div className="flex flex-col items-center justify-center h-96 text-rose-500 gap-4 bg-rose-500/5 rounded-3xl border border-rose-500/10">
-    <AlertCircle size={48} />
-    <div className="text-center">
-      <h3 className="text-xl font-bold text-white mb-1">Connection Failed</h3>
-      <p className="text-rose-400/70">{error}</p>
-    </div>
-  </div>;
-  if (!data) return null;
-
-  // Milestone Progress Logic
-  const migrationProgress = useMemo(() => {
-    if (!milestone) return 0;
-    const onlineNodes = Object.values(data.ip_nodes).filter(n => n.status === 'online');
-    if (onlineNodes.length === 0) return 0;
-    
-    const upToDateNodes = onlineNodes.filter(n => 
-        n.version?.result?.version.includes(milestone.version)
-    );
-    
-    return Math.round((upToDateNodes.length / onlineNodes.length) * 100);
-  }, [data, milestone]);
+  const [animatedProgress, setAnimatedProgress] = useState(0);
 
   // Helper for formatting bytes
   const formatBytes = (bytes: number) => {
@@ -47,11 +26,46 @@ const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  // Milestone Progress Logic
+  const progressMetrics = useMemo(() => {
+    if (!milestone || !data) return { percent: 0, count: 0, total: 0 };
+    
+    const pNodes = data.merged_pnodes;
+    const total = pNodes.length;
+    
+    if (total === 0) return { percent: 0, count: 0, total: 0 };
+    
+    const targetVersion = milestone.version.trim(); 
+    
+    // Filter pNodes that contain the milestone version string
+    const count = pNodes.filter(n => {
+        const ver = n.version || '';
+        return ver.includes(targetVersion);
+    }).length;
+    
+    return {
+        percent: Math.round((count / total) * 100),
+        count,
+        total
+    };
+  }, [data, milestone]);
+
+  // Trigger animation when data loads or progress changes
+  useEffect(() => {
+    // Small timeout to ensure the DOM is ready for transition
+    const timer = setTimeout(() => {
+      setAnimatedProgress(progressMetrics.percent);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [progressMetrics.percent]);
+
   // Calculate Storage Stats
   const storageStats = useMemo(() => {
+    if (!data) return { committed: 0, used: 0 };
     let committed = 0;
     let used = 0;
-    Object.values(data.ip_nodes).forEach(node => {
+    const nodes = Object.values(data.ip_nodes) as IpNodeDetail[];
+    nodes.forEach(node => {
       const res = node.stats?.result;
       const stats = res?.stats || res;
       if (node.status === 'online') {
@@ -64,6 +78,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }
 
   // Derived Data for Charts
   const statusData = useMemo(() => {
+    if (!data) return [];
     return [
       { name: 'Online', value: data.summary.online_ip_nodes, color: '#10b981' }, // Green
       { name: 'Offline', value: data.summary.offline_ip_nodes, color: '#f43f5e' }, // Red
@@ -71,6 +86,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }
   }, [data]);
 
   const sortedByCpu = useMemo(() => {
+    if (!data) return [];
     return Object.entries(data.ip_nodes)
       .filter(([_, details]: [string, IpNodeDetail]) => {
          const res = details.stats?.result;
@@ -92,6 +108,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }
   }, [data]);
 
   const sortedByStorage = useMemo(() => {
+    if (!data) return [];
     return data.merged_pnodes
       .map(p => {
         const host = data.ip_nodes[p.source_ip];
@@ -109,6 +126,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }
   }, [data]);
 
   const fileSystemData = useMemo(() => {
+    if (!data) return [];
     const categories = {
       enterprise: { name: 'Enterprise (5+ FS)', count: 0, color: '#10b981' }, // Green
       high: { name: 'High (2-4 FS)', count: 0, color: '#f59e0b' }, // Yellow
@@ -116,7 +134,8 @@ const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }
       none: { name: 'Inactive (0 FS)', count: 0, color: '#475569' }
     };
 
-    Object.values(data.ip_nodes).forEach(node => {
+    const nodes = Object.values(data.ip_nodes) as IpNodeDetail[];
+    nodes.forEach(node => {
       if (node.status !== 'online') return;
       const count = node.pods?.length || 0;
       
@@ -132,8 +151,6 @@ const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }
   const storageUsagePercent = storageStats.committed > 0 
     ? Math.round((storageStats.used / storageStats.committed) * 100) 
     : 0;
-
-  const totalHosts = data.summary.online_ip_nodes + data.summary.offline_ip_nodes;
 
   // Custom Tooltip Component for Charts
   const CustomTooltip = ({ active, payload, unit }: any) => {
@@ -164,6 +181,18 @@ const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }
     return null;
   };
 
+  if (loading) return <DashboardSkeleton />;
+  if (error) return <div className="flex flex-col items-center justify-center h-96 text-rose-500 gap-4 bg-rose-500/5 rounded-3xl border border-rose-500/10">
+    <AlertCircle size={48} />
+    <div className="text-center">
+      <h3 className="text-xl font-bold text-white mb-1">Connection Failed</h3>
+      <p className="text-rose-400/70">{error}</p>
+    </div>
+  </div>;
+  if (!data) return null;
+
+  const totalHosts = data.summary.online_ip_nodes + data.summary.offline_ip_nodes;
+
   return (
     <div className="space-y-8 animate-fade-in pb-12">
       {/* Milestone Progress Banner */}
@@ -191,16 +220,18 @@ const Dashboard: React.FC<DashboardProps> = ({ data, loading, error, milestone }
                 
                 <div className="flex flex-col items-end min-w-[200px]">
                     <div className="flex justify-between w-full mb-2">
-                        <span className="text-xs font-bold text-slate-500 uppercase">Upgrade Progress</span>
-                        <span className="text-xs font-black text-teal-400">{migrationProgress}%</span>
+                        <span className="text-xs font-bold text-slate-500 uppercase">pNode Upgrade Progress</span>
+                        <span className="text-xs font-black text-teal-400">{progressMetrics.percent}%</span>
                     </div>
                     <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700 shadow-inner">
                         <div 
                             className="h-full bg-gradient-to-r from-teal-600 to-teal-400 transition-all duration-1000 ease-out"
-                            style={{ width: `${migrationProgress}%` }}
+                            style={{ width: `${animatedProgress}%` }}
                         ></div>
                     </div>
-                    <span className="text-[10px] text-slate-600 mt-2 font-mono">XandMinerD Target Protocol: v{milestone.version}.x</span>
+                    <span className="text-[10px] text-slate-600 mt-2 font-mono">
+                      {progressMetrics.count} / {progressMetrics.total} pNodes Updated (v{milestone.version}+)
+                    </span>
                 </div>
             </div>
         </div>

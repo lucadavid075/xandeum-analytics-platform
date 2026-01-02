@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-export const Skeleton = ({ className }: { className?: string }) => (
+export const Skeleton: React.FC<{ className?: string }> = ({ className }) => (
   <div className={`animate-pulse bg-slate-800/40 rounded-lg ${className}`} />
 );
 

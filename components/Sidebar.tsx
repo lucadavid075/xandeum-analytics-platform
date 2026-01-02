@@ -81,7 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAiToggle }) => {
               <span className="text-sm font-black text-white tracking-tight flex items-center gap-1.5">
                 <span className="bg-gradient-to-r from-teal-300 via-white to-amber-300 bg-clip-text text-transparent">Main Era</span>
               </span>
-              <span className="text-[9px] text-slate-400 font-medium leading-none mt-1.5 italic">Support Early storage-enabled dApps</span>
+              <span className="text-[9px] text-slate-400 font-medium leading-none mt-1.5 italic">Real-world sedApps</span>
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onAiToggle }) => {
           </div>
           <div className="flex justify-between items-center mt-2 border-t border-slate-700/50 pt-2">
             <span className="text-[9px] text-slate-600 font-mono tracking-tighter uppercase">XandMinerD Ready</span>
-            <span className="text-[9px] text-slate-600 font-mono">v1.0.2</span>
+            <span className="text-[9px] text-slate-600 font-mono">v1.2.0</span>
           </div>
         </div>
       </div>

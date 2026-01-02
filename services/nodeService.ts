@@ -14,7 +14,7 @@ export const fetchMilestoneInfo = async (): Promise<MilestoneInfo> => {
     version: '1.2',
     name: 'Bonn',
     goal: 'Evict & Replace',
-    description: 'Xandeum now have crash Fault Tolerance. This the MAINNET release, pNode update required.'
+    description: 'The Main Era enables real-world use by sedApps (Storage-Enabled dApps). Features basic BFT, trust anchoring to Solana, and the launch of info.wiki(early support for sedApps).'
   };
 };
 

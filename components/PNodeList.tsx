@@ -196,7 +196,9 @@ const PNodeList: React.FC<PNodeListProps> = ({ data, loading }) => {
                           {node.address.substring(0, 12)}...{node.address.substring(node.address.length - 10)}
                         </div>
                       </td>
-                      <td className="p-5 font-mono text-cyan-400 text-sm font-bold uppercase">v{node.version}</td>
+                      <td className="p-5 font-mono text-cyan-400 text-sm font-bold uppercase">
+                        {node.version.startsWith('v') ? node.version : `v${node.version}`}
+                      </td>
                       <td className="p-5">
                         <div className="flex items-center gap-3">
                            <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.5)] animate-pulse' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]'}`}></div>

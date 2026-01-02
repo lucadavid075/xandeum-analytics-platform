@@ -19,7 +19,7 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     { 
       role: 'model', 
-      text: 'Hello! I am the Xandeum Network pNode Assistant. The network is currently in the South Era (Working Prototype) and moving to the Main Era soon. I can help you understand our new dApp APIs, pNode rewards, and the Bamberg milestone (v0.9). How can I help you today?' }
+      text: 'Hello! I am the Xandeum Network pNode Assistant. The network is currently in the Main Era (Real-world sedApps). I can help you understand our new BFT implementation, info.wiki launch, pNode rewards, and the Bonn milestone (v1.2). How can I help you today?' }
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [hasKey, setHasKey] = useState<boolean | null>(null);
@@ -78,11 +78,14 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
         You are an expert AI Assistant for the Xandeum Network.
         
         **Current Context: MAIN ERA (v1.2 Bonn)**
-        - Status: Support Early sedApps.
-        - Transition: Moving from South era (Working Prototype) to Main era (Early support for sedApps).
-        - Features: Now have crash Fault Tolerance, Architecture spike, journey through all layers, full API for storage-enabled dApps.
-        - Developer Model: File system model for scalable storage on Solana.
-        - Core Capabilities: Evict & replace, Redundancy stats, Basic search, pNode rewards, and paging.
+        - Status: Real-world use by Storage-Enabled dApps (sedApps).
+        - Name Origin: Named after the German river Main.
+        - Transition: Ready for real-world use by storage-enabled decentralized applications (sedApps).
+        - Major Features: 
+          1. info.wiki launch (fully decentralized Wikipedia demo app).
+          2. Basic implementation of Byzantine Fault Tolerance (BFT).
+          3. Trust anchoring to the Solana blockchain.
+        - Milestone Goal: "Evict & Replace".
         
         **Platform Knowledge:**
         - Xandeum: Scalable storage layer for Solana.
@@ -99,9 +102,9 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
         ${JSON.stringify(nodeContext)}
 
         **Instructions:**
-        1. Explain the Main Era's importance in supprting early storage-enabled dApps.
-        2. Highlight "Evict and replace" as the goal for the Bonn milestone.
-        3. Discuss pNode rewards and the dApp API when asked about incentives or developer tools.
+        1. Explain the Main Era as the phase enabling real-world use by sedApps (Storage-Enabled dApps) like info.wiki.
+        2. Highlight BFT and Solana trust anchoring as key security features of this era.
+        3. Discuss "Evict & Replace" as the primary goal of the Bonn milestone.
         4. Be concise, technical where needed, but always friendly.
         5. No financial advice regarding XAND token price.
       `;
@@ -162,7 +165,7 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
           </div>
           <div>
             <h3 className="font-bold text-white">Xandeum Assistant</h3>
-            <p className="text-xs text-slate-400">South Era Mode</p>
+            <p className="text-xs text-slate-400">Main Era Mode</p>
           </div>
         </div>
         <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full transition-colors text-slate-400 hover:text-white">
@@ -219,7 +222,7 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
                  </div>
                  <div className="bg-slate-950 p-3 rounded-2xl rounded-tl-sm border border-slate-800 shadow-sm flex items-center gap-2">
                     <Loader2 size={14} className="animate-spin text-teal-500" />
-                    <span className="text-xs text-slate-400">Processing metrics...</span>
+                    <span className="text-xs text-slate-400">Processing Xandeum Network...</span>
                  </div>
               </div>
             )}
@@ -232,7 +235,7 @@ const AiInsights: React.FC<AiInsightsProps> = ({ data, isOpen, onClose }) => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about pnode, staking, innvation era, rewards..."
+                placeholder="Ask about pnode, staking, innovation era, rewards..."
                 className="w-full bg-slate-900 text-white pl-4 pr-12 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none text-sm border border-slate-800"
                 rows={1}
                 style={{ minHeight: '44px', maxHeight: '120px' }}
