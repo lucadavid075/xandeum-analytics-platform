@@ -1,7 +1,7 @@
 
 import { ApiResponse, MilestoneInfo } from '../types';
 
-const BASE_URL = 'https://web-production-6d2f8.up.railway.app';
+const BASE_URL = 'http://web-production-147da.up.railway.app';
 const API_URL = `${BASE_URL}/all-nodes`;
 
 /**
