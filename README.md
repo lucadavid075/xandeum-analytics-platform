@@ -1,7 +1,7 @@
 # Xandeum pNode Explorer 
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-success?style=for-the-badge)](https://xandeum-analytics-platform.vercel.app)
-[![API Docs](https://img.shields.io/badge/API-Documentation-blue?style=for-the-badge)](https://web-production-b4440.up.railway.app/docs)
+[![API Docs](https://img.shields.io/badge/API-Documentation-blue?style=for-the-badge)](https://web-production-02ba2.up.railway.app/docs)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ---
@@ -15,7 +15,7 @@ Live: https://xandeum-analytics-platform.vercel.app
 
 ### Comprehensive API for developers
 
-API Resources: web-production-02ba2.up.railway.app/docs  
+API Resources: https://web-production-02ba2.up.railway.app/docs  
 [github repo](https://github.com/lucadavid075/pnode-aggregation-api)       
 [documentation](https://github.com/lucadavid075/pnode-aggregation-api/tree/main/docs)
 
